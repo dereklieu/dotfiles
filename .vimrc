@@ -1,0 +1,257 @@
+"pathogen
+call pathogen#infect()
+
+"{{{Auto Commands
+
+" Automatically cd into the directory that the file is in
+autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
+
+" Remove any trailing whitespace that is in the file
+autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+
+" Restore cursor position to where it was before
+augroup JumpCursorOnEdit
+   au!
+   autocmd BufReadPost *
+            \ if expand("<afile>:p:h") !=? $TEMP |
+            \   if line("'\"") > 1 && line("'\"") <= line("$") |
+            \     let JumpCursorOnEdit_foo = line("'\"") |
+            \     let b:doopenfold = 1 |
+            \     if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
+            \        let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
+            \        let b:doopenfold = 2 |
+            \     endif |
+            \     exe JumpCursorOnEdit_foo |
+            \   endif |
+            \ endif
+   " Need to postpone using "zv" until after reading the modelines.
+   autocmd BufWinEnter *
+            \ if exists("b:doopenfold") |
+            \   exe "normal zv" |
+            \   if(b:doopenfold > 1) |
+            \       exe  "+".1 |
+            \   endif |
+            \   unlet b:doopenfold |
+            \ endif
+augroup END
+
+"}}}
+
+"{{{Misc Settings
+
+" Necesary for lots of cool vim things
+set nocompatible
+
+" This shows what you are typing as a command.  I love this!
+set showcmd
+
+" Disable folding
+set nofoldenable
+
+" Needed for Syntax Highlighting and stuff
+filetype on
+filetype plugin indent on
+syntax enable
+set grepprg=grep\ -nH\ $*
+
+" Who doesn't like autoindent?
+set autoindent
+
+" Spaces are better than a tab character
+set expandtab
+set smarttab
+
+" Who wants an 8 character tab?  Not me!
+set shiftwidth=2
+set softtabstop=2
+
+" Avoid writing buffer backups on save.
+" Good to avoid doubling up gulp watchers.
+set nowritebackup
+
+" Use english for spellchecking, but don't spellcheck by default
+if version >= 700
+   set spl=en spell
+   set nospell
+endif
+
+" gcc is good stuff
+compiler gcc
+
+" Cool tab completion stuff
+set wildmenu
+set wildmode=list:longest,full
+
+" Got backspace?
+set backspace=2
+
+" Show line numbers
+set number
+
+" Ignoring case is a fun trick
+set ignorecase
+
+" And so is Artificial Intellegence!
+set smartcase
+
+" This is totally awesome - remap jk to escape in insert mode.  You'll never type jk anyway, so it's great!
+inoremap jk <Esc>
+
+set timeoutlen=150
+set ttimeoutlen=10
+
+" Moving is better with g
+:nnoremap k gk
+:nnoremap j gj
+
+" Greps under your cursor
+" TODO haven't ironed out all the kinks here yet
+:nnoremap ,s :grep <C-R><C-W> *<CR>
+
+" Get thee to a buffer!
+:nnoremap ,b :ls<CR>:buffer<Space>
+
+" Incremental searching is sexy
+set incsearch
+
+" Highlight things that we find with the search
+set hlsearch
+
+" When I close a tab, remove the buffer
+set nohidden
+
+" Set off the other paren
+highlight MatchParen ctermbg=4
+" }}}
+
+"{{{Look and Feel
+colorscheme morning
+
+"Status line gnarliness
+set laststatus=2
+set statusline=%F%m%r%h%w\ (%{&ff}){%Y}\ [%l,%v][%p%%]
+
+"{{{ Paste Toggle
+let paste_mode = 0 " 0 = normal, 1 = paste
+
+func! Paste_on_off()
+   if g:paste_mode == 0
+      set paste
+      let g:paste_mode = 1
+   else
+      set nopaste
+      let g:paste_mode = 0
+   endif
+   return
+endfunc
+"}}}
+
+"{{{ Todo List Mode
+
+function! TodoListMode()
+   e ~/.todo.otl
+   Calendar
+   wincmd l
+   set foldlevel=1
+   tabnew ~/.notes.txt
+   tabfirst
+   " or 'norm! zMzr'
+endfunction
+
+"}}}
+
+"}}}
+
+"{{{ Mappings
+
+" Open Url on this line with the browser \w
+map <Leader>w :call Browser ()<CR>
+
+" TODO Mode
+nnoremap <silent> <Leader>todo :execute TodoListMode()<CR>
+
+" Next Tab
+nnoremap <silent> <C-k> :tabnext<CR>
+
+" Previous Tab
+nnoremap <silent> <C-j> :tabprevious<CR>
+
+" New Tab
+nnoremap <silent> <C-t> :tabnew<CR>
+
+" Paste Mode!  Dang! <F10>
+nnoremap <silent> <F10> :call Paste_on_off()<CR>
+set pastetoggle=<F10>
+
+" Edit vimrc \ev
+nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
+
+" Open nerdtree \nt
+nnoremap <silent> <Leader>nt :NERDTree<CR>
+
+" Good call Benjie (r for i)
+nnoremap <silent> <Home> i <Esc>r
+nnoremap <silent> <End> a <Esc>r
+
+" Create Blank Newlines and stay in Normal mode
+" TODO there's a better way here...
+nnoremap <silent> zj o<Esc>
+nnoremap <silent> zk O<Esc>
+
+" Space will toggle folds!
+nnoremap <space> za
+
+" Search mappings: These will make it so that going to the next one in a
+" search will center on the line it's found in.
+map N Nzz
+map n nzz
+
+" Newlines: enter creates them without going into insert mode.
+" Lets you stay in the current line you're on.
+" Removing this for now because it interferes with <CR> for un-highlighting
+" nmap <S-Enter> O<Esc>j
+" nmap <CR> o<Esc>k
+
+" Get rid of current highlights
+nnoremap <CR> :noh<CR><CR>
+
+" Testing
+" set completeopt=longest,menuone,preview
+
+" Fix email paragraphs
+nnoremap <leader>par :%s/^>$//<CR>
+
+"}}}
+
+"{{{Taglist configuration
+let Tlist_Use_Right_Window = 1
+let Tlist_Enable_Fold_Column = 0
+let Tlist_Exit_OnlyWindow = 1
+let Tlist_Use_SingleClick = 1
+let Tlist_Inc_Winwidth = 0
+"}}}
+
+let g:rct_completion_use_fri = 1
+"let g:Tex_DefaultTargetFormat = "pdf"
+let g:Tex_ViewRule_pdf = "kpdf"
+
+" Use html syntax highlighting for ejs (javascript template), tpl (template) files
+au BufNewFile,BufRead *.ejs set filetype=html
+au BufNewFile,BufRead *.tpl set filetype=html
+au BufNewFile,BufRead *.json set filetype=js
+
+" Use jsx syntax highlighting and indentation for .js files (not just .jsx)
+let g:jsx_ext_required = 0
+
+" compile less to css with ,m
+nnoremap ,m :w <BAR> !lessc % > %:t:r.css<CR><space>
+
+"""""
+" Plugin-specific items
+"""""
+
+" Copy gist codes with option -c
+let g:gist_clip_command = "pbcopy"
+
+" Definitely want to show filetypes in gists
+let g:gist_detect_filetype = 1
