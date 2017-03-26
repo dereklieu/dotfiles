@@ -97,7 +97,7 @@ set smartcase
 " This is totally awesome - remap jk to escape in insert mode.  You'll never type jk anyway, so it's great!
 inoremap jk <Esc>
 
-set timeoutlen=150
+set timeoutlen=200
 set ttimeoutlen=10
 
 " Moving is better with g
@@ -125,7 +125,7 @@ highlight MatchParen ctermbg=4
 " }}}
 
 "{{{Look and Feel
-colorscheme morning
+colorscheme darkblue
 
 "Status line gnarliness
 set laststatus=2
@@ -255,3 +255,6 @@ let g:gist_clip_command = "pbcopy"
 
 " Definitely want to show filetypes in gists
 let g:gist_detect_filetype = 1
+
+" Recognize Makefile, not just makefile
+autocmd FileType make setlocal noexpandtab
