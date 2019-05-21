@@ -146,29 +146,12 @@ func! Paste_on_off()
 endfunc
 "}}}
 
-"{{{ Todo List Mode
-
-function! TodoListMode()
-   e ~/.todo.otl
-   Calendar
-   wincmd l
-   set foldlevel=1
-   tabnew ~/.notes.txt
-   tabfirst
-   " or 'norm! zMzr'
-endfunction
-
-"}}}
-
 "}}}
 
 "{{{ Mappings
 
 " Open Url on this line with the browser \w
 map <Leader>w :call Browser ()<CR>
-
-" TODO Mode
-nnoremap <silent> <Leader>todo :execute TodoListMode()<CR>
 
 " Next Tab
 nnoremap <silent> <C-k> :tabnext<CR>
@@ -197,6 +180,7 @@ nnoremap <silent> <End> a <Esc>r
 " TODO there's a better way here...
 nnoremap <silent> zj o<Esc>
 nnoremap <silent> zk O<Esc>
+
 
 " Space will toggle folds!
 nnoremap <space> za
