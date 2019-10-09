@@ -3,9 +3,6 @@ call pathogen#infect()
 
 "{{{Auto Commands
 
-" Automatically cd into the directory that the file is in
-autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
-
 " Remove any trailing whitespace that is in the file
 autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 
@@ -38,6 +35,9 @@ augroup END
 "}}}
 
 "{{{Misc Settings
+
+" Swap files begone
+set directory^=$HOME/.vim/swap//
 
 " Necesary for lots of cool vim things
 set nocompatible
@@ -125,7 +125,9 @@ highlight MatchParen ctermbg=4
 " }}}
 
 "{{{Look and Feel
-colorscheme darkblue
+set termguicolors
+let ayucolor="dark"
+colorscheme ayu
 
 "Status line gnarliness
 set laststatus=2
@@ -150,8 +152,8 @@ endfunc
 
 "{{{ Mappings
 
-" Open Url on this line with the browser \w
-map <Leader>w :call Browser ()<CR>
+" Allow mouse scroll
+set mouse=nicr
 
 " Next Tab
 nnoremap <silent> <C-k> :tabnext<CR>
@@ -224,11 +226,11 @@ au BufNewFile,BufRead *.ejs set filetype=html
 au BufNewFile,BufRead *.tpl set filetype=html
 au BufNewFile,BufRead *.json set filetype=js
 
-" Use jsx syntax highlighting and indentation for .js files (not just .jsx)
-let g:jsx_ext_required = 0
+" Enable Flow highlighting from the Pangloss javascript bundle
+let g:javascript_plugin_flow = 1
 
-" compile less to css with ,m
-nnoremap ,m :w <BAR> !lessc % > %:t:r.css<CR><space>
+" Since autochdir breaks with fugitive, use this command
+nnoremap <leader>cd :lcd %:p:h<CR>
 
 """""
 " Plugin-specific items
