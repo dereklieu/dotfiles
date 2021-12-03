@@ -1,4 +1,10 @@
-"pathogen
+call plug#begin('~/.vim/plugged')
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'puremourning/vimspector'
+
+" pathogen
 call pathogen#infect()
 
 "{{{Auto Commands
@@ -224,7 +230,14 @@ let g:Tex_ViewRule_pdf = "kpdf"
 " Use html syntax highlighting for ejs (javascript template), tpl (template) files
 au BufNewFile,BufRead *.ejs set filetype=html
 au BufNewFile,BufRead *.tpl set filetype=html
+au BufNewFile,BufRead *.tsx set filetype=typescript.tsx
 au BufNewFile,BufRead *.json set filetype=js
+
+" Tsx files use ts syntax highlighting, while the jsx plugin handles the jsx parts
+augroup twig_ft
+  au!
+  autocmd BufNewFile,BufRead *.tsx   set syntax=typescript
+augroup END
 
 " Enable Flow highlighting from the Pangloss javascript bundle
 let g:javascript_plugin_flow = 1
@@ -241,6 +254,9 @@ let g:gist_clip_command = "pbcopy"
 
 " Definitely want to show filetypes in gists
 let g:gist_detect_filetype = 1
+
+" Enable vimspector with default mappings
+let g:vimspector_enable_mappings = "HUMAN"
 
 " Recognize Makefile, not just makefile
 autocmd FileType make setlocal noexpandtab
