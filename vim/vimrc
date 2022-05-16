@@ -260,3 +260,7 @@ let g:vimspector_enable_mappings = "HUMAN"
 
 " Recognize Makefile, not just makefile
 autocmd FileType make setlocal noexpandtab
+
+set backupdir=/tmp//
+set directory=/tmp//
+set undodir=/tmp//
